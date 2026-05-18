@@ -1,0 +1,152 @@
+{
+  "university_assistant": {
+    "context": "This assistant handles course, assignment, quiz, exam, and date queries via NLP.",
+    "data": {
+      "semester": "Spring 2026",
+      "courses": [
+        {
+          "course_id": "CS101",
+          "course_name": "Introduction to Programming",
+          "instructor": "Dr. Ahmed",
+          "schedule": {
+            "lecture_days": ["Monday", "Wednesday"],
+            "lecture_time": "10:00 AM - 11:30 AM",
+            "room": "Hall B2"
+          },
+          "academic_events": {
+            "midterm_exam": {
+              "date": "2026-03-15",
+              "time": "09:00 AM",
+              "venue": "Exam Hall 1",
+              "weight": "30%"
+            },
+            "final_exam": {
+              "date": "2026-05-10",
+              "time": "02:00 PM",
+              "venue": "Exam Hall 2",
+              "weight": "40%"
+            },
+            "assignments": [
+              {
+                "assignment_id": "A1",
+                "title": "Data Structures Basics",
+                "due_date": "2026-02-20",
+                "max_score": 100,
+                "submission_type": "online"
+              },
+              {
+                "assignment_id": "A2",
+                "title": "Algorithm Analysis",
+                "due_date": "2026-03-30",
+                "max_score": 100,
+                "submission_type": "paper"
+              }
+            ],
+            "quizzes": [
+              {
+                "quiz_id": "QZ1",
+                "topic": "Loops & Conditionals",
+                "date": "2026-02-10",
+                "duration_minutes": 20,
+                "total_marks": 20
+              },
+              {
+                "quiz_id": "QZ2",
+                "topic": "Functions & Recursion",
+                "date": "2026-03-05",
+                "duration_minutes": 25,
+                "total_marks": 25
+              }
+            ]
+          }
+        },
+        {
+          "course_id": "MATH202",
+          "course_name": "Calculus II",
+          "instructor": "Prof. Sara",
+          "schedule": {
+            "lecture_days": ["Tuesday", "Thursday"],
+            "lecture_time": "01:00 PM - 02:30 PM",
+            "room": "Math Building 3"
+          },
+          "academic_events": {
+            "midterm_exam": {
+              "date": "2026-03-18",
+              "time": "11:00 AM",
+              "venue": "Exam Hall 1",
+              "weight": "35%"
+            },
+            "final_exam": {
+              "date": "2026-05-12",
+              "time": "09:00 AM",
+              "venue": "Exam Hall 3",
+              "weight": "45%"
+            },
+            "assignments": [
+              {
+                "assignment_id": "A1",
+                "title": "Integration Techniques",
+                "due_date": "2026-02-25",
+                "max_score": 50,
+                "submission_type": "online"
+              }
+            ],
+            "quizzes": [
+              {
+                "quiz_id": "QZ1",
+                "topic": "Derivatives Review",
+                "date": "2026-02-12",
+                "duration_minutes": 15,
+                "total_marks": 15
+              }
+            ]
+          }
+        }
+      ]
+    },
+    "nlp_query_mapping": {
+      "user_intent_examples": {
+        "add": ["add assignment", "create quiz", "insert mid exam date", "add new course"],
+        "delete": ["delete assignment A1", "remove quiz", "delete final exam date"],
+        "view": ["show all quizzes", "get midterm dates", "list assignments for CS101"],
+        "update": ["change due date", "reschedule exam", "edit quiz marks"]
+      },
+      "sample_queries_and_response_logic": [
+        {
+          "query": "add assignment for CS101 with title 'Python Project' due 2026-04-10",
+          "action": "add",
+          "target": "assignment",
+          "course": "CS101",
+          "details": {
+            "title": "Python Project",
+            "due_date": "2026-04-10"
+          }
+        },
+        {
+          "query": "delete mid exam date for MATH202",
+          "action": "delete",
+          "target": "midterm_exam",
+          "course": "MATH202"
+        },
+        {
+          "query": "show all quiz dates in Spring 2026",
+          "action": "view",
+          "target": "quizzes",
+          "filter": "all_quiz_dates"
+        },
+        {
+          "query": "change final exam date of CS101 to 2026-05-15",
+          "action": "update",
+          "target": "final_exam",
+          "course": "CS101",
+          "new_date": "2026-05-15"
+        }
+      ]
+    },
+    "response_confidence_indicators": {
+      "high_confidence": "Exact match found in course/academic_events",
+      "medium_confidence": "Partial match — ask user for course_id or date clarification",
+      "low_confidence": "No matching course/event — request more details or create new entry"
+    }
+  }
+}

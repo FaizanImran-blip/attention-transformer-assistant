@@ -1,0 +1,36 @@
+USER INPUT
+   ↓
+Text Cleaning
+   ↓
+Tokenization
+   ↓
+Intent Detection
+   ↓
+Entity Extraction
+   ↓
+Context Matching
+   ↓
+Confidence Check
+   ↓
+Final Action
+
+
+
+
+User Input
+   ↓
+Cleaning
+   ↓
+Tokenization
+   ↓
+Stopword removal
+   ↓
+Embedding (semantic meaning)
+   ↓
+JSON intents + course data embedding match
+   ↓
+Intent detection (add/view/update/delete)
+   ↓
+Course/assignment lookup from JSON
+   ↓
+Response
