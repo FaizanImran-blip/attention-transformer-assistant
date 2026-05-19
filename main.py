@@ -1,9 +1,12 @@
 import re
 from rapidfuzz import process
+import sys
 
+sys.path.append("/Users/Faizanimran/Downloads/ai powered assistant uninveristy")
+
+import trans
 
 STOPWORDS = {
-    # English grammar
     "a",
     "an",
     "the",
@@ -34,7 +37,6 @@ STOPWORDS = {
     "about",
     "as",
     "into",
-    # pronouns
     "i",
     "you",
     "he",
@@ -50,14 +52,12 @@ STOPWORDS = {
     "your",
     "our",
     "their",
-    # question words
     "how",
     "what",
     "why",
     "where",
     "when",
     "who",
-    # modals
     "do",
     "does",
     "did",
@@ -65,7 +65,6 @@ STOPWORDS = {
     "could",
     "should",
     "would",
-    # Hindi/Urdu filler
     "hai",
     "hain",
     "ka",
@@ -78,7 +77,6 @@ STOPWORDS = {
     "kyun",
     "kab",
     "kaise",
-    # fillers
     "pls",
     "please",
     "bro",
@@ -89,29 +87,47 @@ STOPWORDS = {
     "ok",
     "okay",
     "u",
+    "are",
 }
 
-
 VOCAB = [
-    "love", "miss", "help", "confused", "understand",
-    "prepare", "preparing", "question", "answer", "topic",
-    "lecture", "tomorrow"
+    "love",
+    "miss",
+    "help",
+    "confused",
+    "understand",
+    "courses",
+    "quiz",
+    "quizzes",
+    "presentations",
+    "presentation",
+    "final exam",
+    "mid term exam",
+    "mid exam",
+    "assignment",
+    "assignments",
+    "prepare",
+    "preparing",
+    "question",
+    "answer",
+    "topic",
+    "lecture",
+    "tomorrow",
+    "view",
 ]
+
 
 def correct_spelling(tokens):
     corrected = []
-
     for word in tokens:
         if word in VOCAB:
             corrected.append(word)
         else:
             match = process.extractOne(word, VOCAB)
-
-            if match and match[1] >= 94:
+            if match and match[1] >= 90:  # Lowered threshold for better matching
                 corrected.append(match[0])
             else:
                 corrected.append(word)
-
     return corrected
 
 
@@ -119,13 +135,7 @@ def remove_stopwords(tokens):
     return [word for word in tokens if word not in STOPWORDS]
 
 
-def function_tokenize(text):
-    tokens = text.split()
-    print(tokens)
-
-
 def clean_text(user_input):
-
     text = user_input.lower()
     text = re.sub(r"[^a-z0-9\s]", " ", text)
     text = re.sub(r"(.)\1{2,}", r"\1", text)
@@ -133,23 +143,45 @@ def clean_text(user_input):
     text = re.sub(r"\b\d+\b", " ", text)
     text = re.sub(r"\s+", " ", text)
     text = text.strip()
-
     return text
 
 
 while True:
+    try:
+        user_input = input("Enter please: ")
 
-    user_input = input("Enter please: ")
+        # Step 1: Clean text
+        clean = clean_text(user_input)
 
-    clean = clean_text(user_input)
+        # Step 2: Tokenize
+        tokens = clean.split()
 
-    tokens = clean.split()
+        # Step 3: Correct spelling
+        corrected_tokens = correct_spelling(tokens)
 
-    corrected_tokens = correct_spelling(tokens)
+        # Step 4: Remove stopwords - BUT keep important words
+        filtered_tokens = remove_stopwords(corrected_tokens)
 
-    filtered_tokens = remove_stopwords(corrected_tokens)
+        # Step 5: Reconstruct cleaned text for intent detection
+        # IMPORTANT: Use filtered tokens for intent, not original clean text
+        intent_text = " ".join(filtered_tokens)
 
-    print("Clean Output:", clean)
-    print("Tokens:", tokens)
-    print("Corrected:", corrected_tokens)
-    print("After Stopwords:", filtered_tokens)
+        # If filtered_text is empty, use original clean text as fallback
+        if not intent_text.strip():
+            intent_text = clean
+
+        print("Clean Output:", clean)
+        print("Tokens:", tokens)
+        print("Corrected:", corrected_tokens)
+        print("After Stopwords:", filtered_tokens)
+
+        # Step 6: Intent detection with filtered text
+        intent, score = trans.function_intentlayer(intent_text)
+
+        print("Intent Layer:", intent)
+        print("Score:", score)
+        print("-" * 50)
+
+    except KeyboardInterrupt:
+        print("\nExiting...")
+        break
