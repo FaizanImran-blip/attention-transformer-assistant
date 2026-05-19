@@ -2,7 +2,9 @@ import re
 from rapidfuzz import process
 import sys
 
-sys.path.append("/Users/Faizanimran/Downloads/ai powered assistant uninveristy")
+sys.path.append(
+    "/Users/Faizanimran/Downloads/clone ai powered univerisity app/new_product"
+)
 
 import trans
 
@@ -101,9 +103,9 @@ VOCAB = [
     "quizzes",
     "presentations",
     "presentation",
-    "final exam",
-    "mid term exam",
-    "mid exam",
+    "final ",
+    "mid term ",
+    "mid ",
     "assignment",
     "assignments",
     "prepare",
@@ -119,15 +121,23 @@ VOCAB = [
 
 def correct_spelling(tokens):
     corrected = []
+
     for word in tokens:
+        if len(word) <= 3:
+            corrected.append(word)
+            continue
+
         if word in VOCAB:
             corrected.append(word)
+            continue
+
+        match = process.extractOne(word, VOCAB)
+
+        if match and match[1] >= 85:
+            corrected.append(match[0])
         else:
-            match = process.extractOne(word, VOCAB)
-            if match and match[1] >= 90:  # Lowered threshold for better matching
-                corrected.append(match[0])
-            else:
-                corrected.append(word)
+            corrected.append(word)
+
     return corrected
 
 
@@ -175,11 +185,11 @@ while True:
         print("Corrected:", corrected_tokens)
         print("After Stopwords:", filtered_tokens)
 
-        # Step 6: Intent detection with filtered text
-        intent, score = trans.function_intentlayer(intent_text)
+        results = trans.function_intentlayer(intent_text)
 
-        print("Intent Layer:", intent)
-        print("Score:", score)
+        print("Detected Intents:")
+        for intent, score in results:
+            print(intent, "->", score)
         print("-" * 50)
 
     except KeyboardInterrupt:
