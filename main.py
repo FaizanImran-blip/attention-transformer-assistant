@@ -1,5 +1,6 @@
 import re
 from rapidfuzz import process
+import entity_layer
 import sys
 
 sys.path.append(
@@ -77,7 +78,6 @@ STOPWORDS = {
     "mein",
     "kya",
     "kyun",
-    "kab",
     "kaise",
     "pls",
     "please",
@@ -172,8 +172,6 @@ while True:
         # Step 4: Remove stopwords - BUT keep important words
         filtered_tokens = remove_stopwords(corrected_tokens)
 
-        # Step 5: Reconstruct cleaned text for intent detection
-        # IMPORTANT: Use filtered tokens for intent, not original clean text
         intent_text = " ".join(filtered_tokens)
 
         # If filtered_text is empty, use original clean text as fallback
@@ -190,8 +188,13 @@ while True:
         print("Detected Intents:")
         for intent, score in results:
             print(intent, "->", score)
-        print("-" * 50)
 
+        final_outputs = entity_layer.handle_entity(user_input, results)
+
+        for output in final_outputs:
+            print("Final Entity Output:", output)
+
+        print("-" * 50)
     except KeyboardInterrupt:
         print("\nExiting...")
         break
