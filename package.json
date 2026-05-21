@@ -1,0 +1,20 @@
+{
+  "name": "new_product",
+  "version": "1.0.0",
+  "description": "the new univerisity ai powered aisstant manager future updates should be mandatory for me to add",
+  "main": "date.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "chrono-node": "^2.9.1",
+    "compromise": "^14.15.0",
+    "dayjs": "^1.11.20",
+    "fuzzysort": "^3.1.0",
+    "ollama": "^0.6.3"
+  },
+  "type": "module"
+}

@@ -1,0 +1,33 @@
+# Python
+__pycache__/
+*.pyc
+*.pyo
+
+# Node
+node_modules/
+
+# Env / secrets
+.env
+.env.local
+.env.*
+
+# Mac
+.DS_Store
+
+# Logs
+*.log
+
+# Virtual env
+venv/
+.venv/
+
+# Build/cache
+dist/
+build/
+
+# IDE
+.vscode/
+.idea/
+
+# Runtime files
+*.sqlite3
