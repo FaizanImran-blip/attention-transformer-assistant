@@ -1,5 +1,5 @@
 # 🎓 Attention Transformer University Assistant
-
+-
 An AI-powered university assistant built with Python, FastAPI, NLP intent pipelines, fuzzy matching, and multilingual understanding.
 
 This project is designed to understand messy student prompts in English, Urdu, and Hinglish and convert them into structured university-related intents.
