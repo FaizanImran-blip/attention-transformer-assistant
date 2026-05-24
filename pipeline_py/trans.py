@@ -11,7 +11,7 @@ data_path = "/Users/Faizanimran/Downloads/clone ai powered univerisity app/new_p
 with open(data_path, "r") as file:
     data = json.load(file)
 
-# precompute embeddings
+
 for item in data["intents"]:
     patterns = item["patterns"]
     if isinstance(patterns, list):

@@ -1,120 +1,81 @@
 import ollama from "ollama";
-import fuzzysort from "fuzzysort";
+import { makeCanonicalPrompt } from "./canonical.js";
 
-const workingPrompts = [
-  "mera quiz 1 se lekr 4 tk hai tuesday ko",
-  "mera assingment monday ko 5 bje sham hai",
-  "hello today no quiz no assignment",
-  "quiz 1 monday 10am aur quiz 2 tuesday 2pm aur assignment 4 friday 5pm",
-  "mera quiz hai monday ko aur assignment hai tuesday ko",
-  "my quiz 1 to 3 is on monday at 10am",
-  "assignment 4 and presentation 2 are due on friday 5pm",
-  "no quiz no assignment today",
-  "my assignment is on monday evening at 5pm",
-  "quiz 1 to 5 tuesday 9am",
-  "presentation 2 tomorrow morning 8am",
-  "mid exam 3 is on thursday at 1pm"
-];
+const TYPES = ["quiz", "assignment", "presentation", "mid exam", "final exam"];
 
-function normalizeInput(input) {
-  return input
-    .toLowerCase()
-    .replace(/kwiz|quz|quizz|quizzz/g, "quiz")
-    .replace(/assingment|asignment|assinment|assigment/g, "assignment")
-    .replace(/lekr|lekar/g, "lekr")
-    .replace(/tak/g, "tk")
-    .replace(/\s+/g, " ")
-    .trim();
-}
+function normalizeModelParsed(parsed) {
+  const arr = Array.isArray(parsed) ? parsed : [parsed];
 
-export function convertPrompt(userInput) {
-  const cleanInput = normalizeInput(userInput);
+  return arr.flatMap(x => {
+    if (!x || !x.university_data) return [];
 
-  const result = fuzzysort.go(cleanInput, workingPrompts, {
-    threshold: -10000,
-    limit: 1,
+    const types = Array.isArray(x.university_data)
+      ? x.university_data
+      : String(x.university_data).split(",");
+
+    return types.map(type => ({
+      university_data: type.trim(),
+      number: Number(x.number) || 0,
+      date_text: x.date_text ?? null,
+      time_text: x.time_text ?? null,
+    }));
   });
-
-  if (result.length === 0) return userInput;
-
-  const best = result[0];
-
-  if (best.score > -300) {
-    return best.target;
-  }
-
-  return userInput;
 }
 
 export async function aiExtractDeadline(userInput) {
-  const convertedInput = convertPrompt(userInput);
+  const cleanInput = makeCanonicalPrompt(userInput);
 
   const prompt = `
-You are a strict university deadline extractor.
+Return ONLY JSON array.
 
-Return ONLY valid JSON.
-No markdown.
-No explanation.
-Do not guess.
+Extract university tasks.
 
-If text says:
-- no quiz
-- no assignment
-- koi quiz nahi
-- quiz ni
-- assignment ni
-then return [].
-
-Allowed types:
+Allowed:
 quiz, assignment, presentation, mid exam, final exam
 
-Roman Urdu meanings:
-kal = tomorrow
-parson = day after tomorrow
-subah = AM
-sham/shaam/raat = PM
-"1 se lekr 4 tk" = numbers 1,2,3,4
-"1 or 3" = numbers 1 and 3
+Fields:
+university_data, number, date_text, time_text
 
-Original text:
-"${userInput}"
+Rules:
+- One object per task.
+- Do not join tasks.
+- Copy date_text from user text.
+- Copy time_text from user text.
+- Missing number = 0.
+- Missing date_text = null.
+- Missing time_text = null.
+- Do not calculate date/day.
 
-Closest working pattern:
-"${convertedInput}"
-
-Important:
-Use original text as truth.
-Use closest working pattern only to understand style.
-Never copy numbers, days, dates, or times from closest pattern unless they exist in original text.
-
-Return schema exactly:
-[
-  {
-    "university_data": "quiz",
-    "number": 1,
-    "date": null,
-    "day": "Monday",
-    "time": "17:00"
-  }
-]
+User:
+${JSON.stringify(cleanInput)}
 `;
 
-  const response = await ollama.chat({
-    model: "qwen2.5:3b",
-    messages: [{ role: "user", content: prompt }],
-    format: "json",
-    options: {
-      temperature: 0,
-    },
-  });
-
   try {
-    const parsed = JSON.parse(response.message.content);
+    const response = await ollama.chat({
+      model: "qwen2.5:3b",
+      messages: [{ role: "user", content: prompt }],
+      format: "json",
+      options: {
+        temperature: 0,
+        top_p: 0.1,
+        num_predict: 150,
+      },
+    });
 
-    if (!Array.isArray(parsed)) return [];
+    const content = response.message.content.trim();
 
-    return parsed;
-  } catch {
-    return [];
+    const parsed = normalizeModelParsed(JSON.parse(content))
+      .filter(x => TYPES.includes(x.university_data));
+
+    return {
+      raw: content,
+      parsed,
+    };
+  } catch (e) {
+    return {
+      raw: null,
+      parsed: [],
+      error: e.message,
+    };
   }
 }
