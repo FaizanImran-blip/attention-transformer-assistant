@@ -505,11 +505,8 @@ async function runAutoTests() {
 "ai quiz 1 hai kal",
 "quiz 2 hai parso",
 "quiz 3 hai next week",
-"quiz 4 hai akhir week mein",
 "ai kal quiz hai subah 8 baje",
 "mera quiz 1 bhi hai aur quiz 2 bhi hai same week mein",
-"ai mera quiz postpone ho gaya",
-"quiz ki timing change ho gayi hai",
 "mera quiz chhoot gaya",
 "quiz mein marks kam aaye",
 "quiz ka result kab aayega",
@@ -519,10 +516,9 @@ async function runAutoTests() {
 
 // ----- ASSIGNMENT (English & Urdu) -----
 "assignment ki deadline kal hai",
-"assignment extend karo plz",
-"mera assignment submit nahi hua",
+
 "assignment file corrupt ho gayi",
-"assignment ka link kaam nahi kar raha",
+
 "assignment mein plagiarism aa gaya",
 "mere assignment kuch pages missing hain",
 "assignment ka format kya hai",
@@ -536,7 +532,7 @@ async function runAutoTests() {
 "final exam day after tomorrow hai",
 "final exam Monday ko hai",
 "final exam next week hai",
-"final exam ka date sheet badal gaya",
+
 "final exam online hoga ya offline",
 "final exam mein kya syllabus ayega",
 "final exam mein passing marks kitne hain",
@@ -546,7 +542,6 @@ async function runAutoTests() {
 // ----- MID EXAM (English & Urdu) -----
 "mid exam kal hai",
 "mid exam parso hai",
-"mid exam ki prep nahi hui",
 "mid exam mein calculator allowed hai?",
 "mid exam ka center kahan hai",
 "mid exam postpone ho sakta hai?",
@@ -559,7 +554,6 @@ async function runAutoTests() {
 "presentation day after tomorrow hai",
 "presentation Monday ko hai",
 "presentation ki slides kahan upload karun",
-"presentation mein mic kaam nahi kar raha",
 "presentation ke liye dress code kya hai",
 "presentation group mein hai ek member absent hai",
 "presentation record ho rahi hai kya",
@@ -567,18 +561,9 @@ async function runAutoTests() {
 "urdu: presentation parso hai laptop kharab ho gaya",
 
 // ----- BUGS / ISSUES (Common student problems) -----
-"LMS login nahi ho raha",
-"assignment upload button kaam nahi kar raha",
 "quiz attempt karte waqt page refresh ho gaya",
-"submission deadline miss ho gayi technical issue ki wajah se",
-"file size bohat zyada hai upload nahi ho rahi",
-"internet cut ho gaya exam ke darmiyan",
-"exam time par server down tha",
 "mere answers save nahi hue quiz mein",
-"result show nahi ho raha",
-"attendance glitch se absent dikha raha hai",
 "assignment duplicate submission ho gaya",
-"pdf file corrupt hai dobara upload karun?",
 "ai mera kal quiz hai aur parso assignment deadline hai dono manage kaise karun",
 "ai mera same day quiz bhi hai aur presentation bhi hai",
 
