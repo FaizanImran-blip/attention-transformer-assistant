@@ -1,4 +1,4 @@
-# 🎓 Attention Transformer University Assistant
+# 🎓 Attention Transformer University Assistant .this is not complete architecture
 
 An AI-powered university assistant built with Python, FastAPI, NLP intent pipelines, fuzzy matching, and multilingual understanding.
 
