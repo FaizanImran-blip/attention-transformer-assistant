@@ -6,7 +6,6 @@ import sys
 sys.path.append(
     "/Users/Faizanimran/Downloads/clone ai powered univerisity app/new_product"
 )
-
 import trans
 
 STOPWORDS = {

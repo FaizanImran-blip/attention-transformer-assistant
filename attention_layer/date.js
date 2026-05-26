@@ -1,9 +1,11 @@
 import readline from "readline";
 import dayjs from "dayjs";
+import { runAutoTests } from "./prompts.js";
 import { aiExtractDeadline } from "./model.js";
 import { makeCanonicalPrompt } from "./canonical.js";
-import { loadFeedbackPatterns, saveFeedbackPattern } from "./auto.js";
 
+const loadFeedbackPatterns = () => [];
+const saveFeedbackPattern = () => {};
 const rl = readline.createInterface({
   input: process.stdin,
   output: process.stdout,
@@ -474,118 +476,6 @@ export async function checkInput(userInput, showTable = true) {
 }
 
 
-async function runAutoTests() {
-  const prompts = [
-
-// ----- YOUR ORIGINAL PROMPTS -----
-"hello ai mera assignment hai kal ai",
-"ai mera parso assignment hai",
-"parso",
-"day after tommorow",
-"day after tomorrow",
-"parso tommorow",
-"parso",
-"ai mera monday ko assignment hai",
-"ai mera tuesday ko assignment hai",
-"ai mera wednesday ko assignment hai",
-"ai mera thursday ko assignment hai",
-"ai mera friday ko assignment hai",
-"ai mera satruday ko assignment hai",
-"ai mera saturday ko assignment hai ai",
-"ai mera sunday ko assignment hai ai",
-"mera is sunday ko assignment hai ai",
-"mera next sunday ko assignment hai ai",
-
-// ----- QUIZ (English & Urdu) -----
-"ai mera kal quiz hai",
-"ai mera parso quiz hai",
-"mera quiz day after tomorrow hai",
-"ai mera Monday ko quiz hai",
-"mera Tuesday ko quiz hai",
-"ai quiz 1 hai kal",
-"quiz 2 hai parso",
-"quiz 3 hai next week",
-"ai kal quiz hai subah 8 baje",
-"mera quiz 1 bhi hai aur quiz 2 bhi hai same week mein",
-"mera quiz chhoot gaya",
-"quiz mein marks kam aaye",
-"quiz ka result kab aayega",
-"urdu: ai mera quiz hai kal subah",
-"urdu: mera parso quiz hai dopahar ko",
-"urdu: quiz 1 ho gaya, quiz 2 hai agle hafte",
-
-// ----- ASSIGNMENT (English & Urdu) -----
-"assignment ki deadline kal hai",
-
-"assignment file corrupt ho gayi",
-
-"assignment mein plagiarism aa gaya",
-"mere assignment kuch pages missing hain",
-"assignment ka format kya hai",
-"urdu: mera assignment kal tak submit karna hai",
-"urdu: assignment parso hai lekin main beemar hun",
-"urdu: assignment group project hai ek member ne kuch nahi kiya",
-
-// ----- FINAL EXAM (English & Urdu) -----
-"final exam kal hai",
-"final exam parso hai",
-"final exam day after tomorrow hai",
-"final exam Monday ko hai",
-"final exam next week hai",
-
-"final exam online hoga ya offline",
-"final exam mein kya syllabus ayega",
-"final exam mein passing marks kitne hain",
-"urdu: final exam kal hai aur mene abhi start kiya hai",
-"urdu: final exam parso hai mujhe fever hai",
-
-// ----- MID EXAM (English & Urdu) -----
-"mid exam kal hai",
-"mid exam parso hai",
-"mid exam mein calculator allowed hai?",
-"mid exam ka center kahan hai",
-"mid exam postpone ho sakta hai?",
-"mid exam mein cheat sheet allowed hai?",
-"urdu: mid exam kal hai mera abhi bhi doubt clear nahi hue",
-
-// ----- PRESENTATION (English & Urdu) -----
-"presentation kal hai",
-"presentation parso hai",
-"presentation day after tomorrow hai",
-"presentation Monday ko hai",
-"presentation ki slides kahan upload karun",
-"presentation ke liye dress code kya hai",
-"presentation group mein hai ek member absent hai",
-"presentation record ho rahi hai kya",
-"urdu: presentation kal hai mujhe nervous ho raha hai",
-"urdu: presentation parso hai laptop kharab ho gaya",
-
-// ----- BUGS / ISSUES (Common student problems) -----
-"quiz attempt karte waqt page refresh ho gaya",
-"mere answers save nahi hue quiz mein",
-"assignment duplicate submission ho gaya",
-"ai mera kal quiz hai aur parso assignment deadline hai dono manage kaise karun",
-"ai mera same day quiz bhi hai aur presentation bhi hai",
-
-// ----- EXTRA TIME-BASED (kal, parso, day after tomorrow, next week) -----
-"kal mera final exam hai",
-"parso mera presentation hai",
-"day after tomorrow mera quiz hai",
-"next week Monday ko mid exam hai",
-"next week Wednesday ko assignment hai",
-"agale hafte Tuesday ko final exam hai",
-"ai mera kal subah 9 baje quiz hai",
-"ai mera parso sham 4 baje assignment submission hai",
-"ai mera day after tomorrow dopahar ko presentation hai"
-];
-
-  for (const prompt of prompts) {
-    console.log("\n🧪 TEST:", prompt);
-    await checkInput(prompt);
-  }
-
-  console.log("\n✅ All tests finished");
-}
 function ask() {
   rl.question("\n📝 Enter your query: ", async (answer) => {
     const cleanAnswer = answer.trim();
@@ -622,7 +512,7 @@ if (process.argv[1] && process.argv[1].endsWith("date.js")) {
   console.log("🎓 University Schedule Assistant");
 
   if (process.argv.includes("--test")) {
-    await runAutoTests();
+await runAutoTests(checkInput);
     process.exit(0);
   }
 
