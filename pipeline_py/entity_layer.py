@@ -38,25 +38,25 @@ def detect_action(user_input):
     return "UNKNOWN"
 
 
-def handle_entity(user_input, results):
-    action = detect_action(user_input)
-
+def handle_entity(user_input, results, action):
     if not results:
         return ["NO_INTENT_FOUND"]
 
     final_outputs = []
 
+    action = action.lower()
+
     for intent, score in results:
         if score < 0.55:
             continue
 
-        if action == "SHOW":
+        if action == "show":
             final_outputs.append(f"SHOW DATA for {intent}")
 
-        elif action == "ADD":
+        elif action == "add":
             final_outputs.append(f"ADD DATA in {intent}")
 
-        elif action == "DELETE":
+        elif action == "delete":
             final_outputs.append(f"DELETE DATA from {intent}")
 
         else:

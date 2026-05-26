@@ -1,0 +1,4 @@
+thousands.urdu=prompts.sucess=> text.text
+indent.layer=>main.py
+feedback indents=> auto.py
+attention_layer/=> for the chk.relevant data.dates.year day or week,still attention is weak,

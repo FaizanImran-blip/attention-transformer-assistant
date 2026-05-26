@@ -1,0 +1,41 @@
+text,quiz,assignment,presentation,midterm,final_exam,lecture,course,action
+mera quiz kab hai,1,0,0,0,0,0,0,show
+quiz btao,1,0,0,0,0,0,0,show
+quiz delete krdo,1,0,0,0,0,0,0,delete
+quiz add krdo,1,0,0,0,0,0,0,add
+assignment kab hai,0,1,0,0,0,0,0,show
+assignment delete krdo,0,1,0,0,0,0,0,delete
+assignment add krdo,0,1,0,0,0,0,0,add
+presentation dikhao,0,0,1,0,0,0,0,show
+presentation delete krdo,0,0,1,0,0,0,0,delete
+presentation add krdo,0,0,1,0,0,0,0,add
+midterm btao,0,0,0,1,0,0,0,show
+midterm delete kro,0,0,0,1,0,0,0,delete
+midterm save kro,0,0,0,1,0,0,0,add
+final exam btao,0,0,0,0,1,0,0,show
+final exam delete kro,0,0,0,0,1,0,0,delete
+final exam save kro,0,0,0,0,1,0,0,add
+lecture dikhao,0,0,0,0,0,1,0,show
+lecture delete kro,0,0,0,0,0,1,0,delete
+lecture save kro,0,0,0,0,0,1,0,add
+course dikhao,0,0,0,0,0,0,1,show
+course delete kro,0,0,0,0,0,0,1,delete
+course save kro,0,0,0,0,0,0,1,add
+ai mera final ara hai show kro kab hai jo save kia hai tumne,0,0,0,0,1,0,0,show
+mera final exam kab hai,0,0,0,0,1,0,0,show
+final ara hai show kro,0,0,0,0,1,0,0,show
+mera mid exam kab hai,0,0,0,1,0,0,0,show
+mid ka exam btao,0,0,0,1,0,0,0,show
+mer akab hai exam mid ka btao,0,0,0,1,0,0,0,show
+mera assingmnt kab hai btao,0,1,0,0,0,0,0,show
+sb delete krdo final mid or assingment,1,1,1,1,1,1,1,delete
+quiz assignment show kro,1,1,0,0,0,0,0,show
+quiz assignment delete kro,1,1,0,0,0,0,0,delete
+quiz assignment add kro,1,1,0,0,0,0,0,add
+mid final show kro,0,0,0,1,1,0,0,show
+mid final delete kro,0,0,0,1,1,0,0,delete
+quiz assignment presentation show kro,1,1,1,0,0,0,0,show
+hello ai,0,0,0,0,0,0,0,unknown
+hello ai kia hal hai tumhara,0,0,0,0,0,0,0,unknown
+ai kese ho,0,0,0,0,0,0,0,unknown
+muje help chahiye,0,0,0,0,0,0,0,unknown

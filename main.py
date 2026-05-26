@@ -1,12 +1,22 @@
+import sys
 import re
 from rapidfuzz import process
-import entity_layer
-import sys
+from pipeline_py import entity_layer, trans
 
-sys.path.append(
-    "/Users/Faizanimran/Downloads/clone ai powered univerisity app/new_product"
-)
-import trans
+try:
+    from test import simple_prompt
+except ImportError:
+    simple_prompt = []
+
+
+ACTION_WORDS = {
+    "show": {"show", "view", "btao", "batao", "dikhao", "konsa", "kon", "list"},
+ "add": {
+    "add", "create", "save", "insert", "schedule", "set",
+    "rakh", "rakho", "rakhdo", "note"
+},
+    "delete": {"delete", "remove", "hta", "hata", "hatao", "hatado", "clear", "cancel"},
+}
 
 STOPWORDS = {
     "a",
@@ -19,7 +29,6 @@ STOPWORDS = {
     "were",
     "be",
     "been",
-    "being",
     "to",
     "of",
     "in",
@@ -30,7 +39,6 @@ STOPWORDS = {
     "but",
     "if",
     "then",
-    "else",
     "when",
     "at",
     "by",
@@ -41,15 +49,7 @@ STOPWORDS = {
     "into",
     "i",
     "you",
-    "he",
-    "she",
-    "it",
-    "we",
-    "they",
     "me",
-    "us",
-    "him",
-    "her",
     "my",
     "your",
     "our",
@@ -58,7 +58,6 @@ STOPWORDS = {
     "what",
     "why",
     "where",
-    "when",
     "who",
     "do",
     "does",
@@ -88,7 +87,6 @@ STOPWORDS = {
     "ok",
     "okay",
     "u",
-    "are",
 }
 
 VOCAB = [
@@ -97,14 +95,15 @@ VOCAB = [
     "help",
     "confused",
     "understand",
+    "course",
     "courses",
     "quiz",
     "quizzes",
-    "presentations",
     "presentation",
-    "final ",
-    "mid term ",
-    "mid ",
+    "presentations",
+    "final",
+    "midterm",
+    "mid",
     "assignment",
     "assignments",
     "prepare",
@@ -117,16 +116,107 @@ VOCAB = [
     "view",
 ]
 
+SHOW_PHRASES = [
+    "show",
+    "view",
+    "btao",
+    "batao",
+    "dikhao",
+    "list",
+    "kya hai",
+    "kab hai",
+    "details do",
+    "detail do",
+    "dekhna hai",
+    "check kro",
+    "check karo",
+    "data dikhao",
+    "status",
+    "mere wale",
+]
+ADD_PHRASES = [
+    "add kro",
+    "add karo",
+    "save kro",
+    "save karo",
+    "create kro",
+    "create karo",
+    "insert kro",
+    "schedule kro",
+    "set kro",
+    "naya quiz",
+    "rakh do",
+    "rakhdo",
+    "rakho",
+    "rakh lo",
+    "note kro",
+    "note karo",
+    "note krdo",
+    "note kar do",
+    "note karlo"
+]
+DELETE_PHRASES = [
+    "delete kro",
+    "delete karo",
+    "remove kro",
+    "remove karo",
+    "hata do",
+    "hatao",
+    "clear kro",
+    "cancel kro",
+]
+
+
+def detect_action_from_text(text):
+    text = text.lower()
+
+    reference_phrases = [
+        "jo save hain",
+        "jo saved hain",
+        "jo add kie hain",
+        "jo add kiye hain",
+        "jo add hain",
+        "save hain",
+        "add kie hain",
+        "add kiye hain",
+    ]
+
+    for phrase in reference_phrases:
+        if phrase in text:
+            return "show"
+
+    for phrase in DELETE_PHRASES:
+        if phrase in text:
+            return "delete"
+
+    for phrase in ADD_PHRASES:
+        if phrase in text:
+            return "add"
+
+    for phrase in SHOW_PHRASES:
+        if phrase in text:
+            return "show"
+
+    # word-level fallback
+    words = set(text.split())
+
+    if words & ACTION_WORDS["add"]:
+        return "add"
+
+    if words & ACTION_WORDS["delete"]:
+        return "delete"
+
+    if words & ACTION_WORDS["show"]:
+        return "show"
+
+    return "unknown"
+
 
 def correct_spelling(tokens):
     corrected = []
 
     for word in tokens:
-        if len(word) <= 3:
-            corrected.append(word)
-            continue
-
-        if word in VOCAB:
+        if len(word) <= 3 or word in VOCAB:
             corrected.append(word)
             continue
 
@@ -150,50 +240,81 @@ def clean_text(user_input):
     text = re.sub(r"(.)\1{2,}", r"\1", text)
     text = re.sub(r"\b[a-z]+\d+\b", " ", text)
     text = re.sub(r"\b\d+\b", " ", text)
-    text = re.sub(r"\s+", " ", text)
-    text = text.strip()
+    text = re.sub(r"\s+", " ", text).strip()
     return text
 
 
-while True:
-    try:
-        user_input = input("Enter please: ")
+def process_prompt(user_input):
+    print("INPUT:", user_input)
 
-        # Step 1: Clean text
-        clean = clean_text(user_input)
+    clean = clean_text(user_input)
+    tokens = clean.split()
 
-        # Step 2: Tokenize
-        tokens = clean.split()
+    corrected_tokens = correct_spelling(tokens)
+    filtered_tokens = remove_stopwords(corrected_tokens)
+    INTENT_NORMALIZE = {
+        "assignments": "assignment",
+        "quizzes": "quiz",
+        "presentations": "presentation",
+        "courses": "course",
+        "lectures": "lecture",
+    }
+    filtered_tokens = [
+        INTENT_NORMALIZE.get(word, word)
+         for word in filtered_tokens
+    ]
 
-        # Step 3: Correct spelling
-        corrected_tokens = correct_spelling(tokens)
 
-        # Step 4: Remove stopwords - BUT keep important words
-        filtered_tokens = remove_stopwords(corrected_tokens)
+    action = detect_action_from_text(" ".join(corrected_tokens))
+    intent_text = " ".join(filtered_tokens)
 
-        intent_text = " ".join(filtered_tokens)
+    if not intent_text.strip():
+        intent_text = clean
 
-        # If filtered_text is empty, use original clean text as fallback
-        if not intent_text.strip():
-            intent_text = clean
+    print("Clean Output:", clean)
+    print("Tokens:", tokens)
+    print("Corrected:", corrected_tokens)
+    print("After Stopwords:", filtered_tokens)
+    print("Detected Action:", action)
 
-        print("Clean Output:", clean)
-        print("Tokens:", tokens)
-        print("Corrected:", corrected_tokens)
-        print("After Stopwords:", filtered_tokens)
+    results = trans.function_intentlayer(intent_text)
 
-        results = trans.function_intentlayer(intent_text)
+    print("Detected Intents:")
+    for intent, score in results:
+        print(intent, "->", score)
 
-        print("Detected Intents:")
-        for intent, score in results:
-            print(intent, "->", score)
+    final_outputs = entity_layer.handle_entity(user_input, results, action)
 
-        final_outputs = entity_layer.handle_entity(user_input, results)
+    for output in final_outputs:
+        print("Final Entity Output:", output)
 
-        for output in final_outputs:
-            print("Final Entity Output:", output)
+    print("-" * 50)
 
-        print("-" * 50)
-    except KeyboardInterrupt:
-        print("\nExiting...")
-        break
+
+def run_tests():
+    print("TEST MODE ON")
+    print("TOTAL PROMPTS:", len(simple_prompt))
+
+    for prompt in simple_prompt:
+        process_prompt(prompt)
+
+
+def run_single_input():
+    while True:
+        user_input = input("Enter text: ").strip()
+
+        if user_input.lower() in {"exit", "quit", "q"}:
+            print("Program stopped.")
+            break
+
+        if not user_input:
+            continue
+
+        process_prompt(user_input)
+
+
+if __name__ == "__main__":
+    if "--test" in sys.argv:
+        run_tests()
+    else:
+        run_single_input()
